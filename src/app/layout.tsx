@@ -25,10 +25,10 @@ const greatVibes = Great_Vibes({
 
 // 3. Metadata (Judul & Deskripsi untuk Link WA)
 export const metadata: Metadata = {
-  title: "The Wedding of Romeo & Juliet", // Ganti sesuai nama pengantin
-  description: "Kami mengundang Anda untuk hadir di momen bahagia kami.",
+  title: "The Wedding of Arga & Hana", // Ganti sesuai nama pengantin
+  description: "Kami mengundang Anda untuk hadir di momen bahagia kami. Mohon doa restu.",
   icons: {
-    icon: "/favicon.ico", // Pastikan ada file icon jika mau
+    icon: "/favicon.jpg", // Pastikan ada file icon jika mau
   },
 };
 
