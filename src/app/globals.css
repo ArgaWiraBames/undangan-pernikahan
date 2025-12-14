@@ -1,7 +1,57 @@
 @import "tailwindcss";
 
 @theme {
-  --color-wedding-primary: #5c7a6c;
-  --color-wedding-secondary: #d4af37;
-  --color-wedding-bg: #f9f7f2; 
+  /* Font Setup */
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-serif: "Playfair Display", serif;
+  --font-script: "Great Vibes", cursive;
+
+  /* PALET WARNA BARU (Sesuai Screenshot Palet) */
+  --color-wedding-bg: #F3E0DC;        /* Nude Pink (Background) */
+  --color-wedding-primary: #9A5044;   /* Merah Bata (Teks Utama) */
+  --color-wedding-secondary: #C48F83; /* Soft Brown/Dark Pink (Aksen) */
+  --color-wedding-card: #FFFFFF;      /* Putih bersih */
 }
+
+/* Reset standar */
+:root {
+  background-color: var(--color-wedding-bg);
+  color: var(--color-wedding-primary);
+}
+
+/* Scrollbar cantik */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: var(--color-wedding-secondary);
+  border-radius: 20px;
+}
+
+/* Animasi Fade Up */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  opacity: 0;
+  animation: fadeInUp 1s ease-out forwards;
+}
+
+/* Delay Animasi */
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-500 { animation-delay: 0.5s; }
+.delay-700 { animation-delay: 0.7s; }
+.delay-1000 { animation-delay: 1s; }

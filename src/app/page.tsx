@@ -1,74 +1,133 @@
+import { Suspense } from 'react';
 import { client } from "@/sanity/client";
 import { urlFor } from "@/sanity/image";
 import Image from "next/image";
+
+// Components
+import WelcomeOverlay from "@/components/WelcomeOverlay";
+import QuranSection from "@/components/QuranSection";
+import CoupleSection from "@/components/CoupleSection";
+import LoveStorySection from "@/components/LoveStorySection";
+import InitialsSection from "@/components/InitialsSection";
 import EventSection from "@/components/EventSection";
 import GallerySection from "@/components/GallerySection";
+import GiftSection from "@/components/GiftSection";
 import GuestbookSection from "@/components/GuestbookSection";
-import { Suspense } from 'react';
-import WelcomeOverlay from '@/components/WelcomeOverlay';
- // <--- Import baru
+import Reveal from "@/components/Reveal"; // Masih dipakai untuk Gallery & Gift
+import { FloralCorner } from "@/components/Icons"; 
 
-// Revalidate data setiap 0 detik (selalu fresh) agar ucapan baru langsung muncul
 export const revalidate = 0; 
 
 async function getData() {
-  // Query GROQ: Ambil data mempelai DAN data ucapan sekaligus
-  // 'order(waktu desc)' artinya urutkan dari yang paling baru
   const query = `{
     "mempelai": *[_type == "mempelai"][0],
     "ucapan": *[_type == "ucapan"] | order(waktu desc)
   }`;
-  
-  const data = await client.fetch(query);
-  return data;
+  return await client.fetch(query);
 }
 
 export default async function Home() {
   const { mempelai, ucapan } = await getData();
-
-  if (!mempelai) return <div className="text-center p-10">Data belum ada.</div>;
+  
+  if (!mempelai) return <div className="text-center p-20">Loading...</div>;
 
   return (
-    <main className="min-h-screen bg-wedding-bg">
-
-      {/* 1. WELCOME OVERLAY (COVER DEPAN) */}
-      {/* Dibungkus Suspense agar fitur baca URL aman */}
+    <main className="min-h-screen bg-wedding-bg text-wedding-primary overflow-x-hidden font-sans">
+      
       <Suspense fallback={null}>
         <WelcomeOverlay mempelai={mempelai} />
       </Suspense>
-      
-      {/* 1. HERO SECTION */}
-      <div className="flex flex-col items-center justify-center min-h-screen p-6 text-center">
-        {mempelai.fotoSampul && (
-          <div className="mb-8 relative w-64 h-64 rounded-full overflow-hidden border-4 border-wedding-secondary shadow-xl">
-            <Image 
-              src={urlFor(mempelai.fotoSampul).width(500).url()} 
-              alt="Foto Prewedding"
-              fill
-              className="object-cover"
-            />
-          </div>
-        )}
-        <h3 className="text-xl uppercase tracking-[0.2em] text-gray-500 mb-4">The Wedding Of</h3>
-        <h1 className="text-5xl md:text-7xl font-serif text-wedding-primary mb-2">{mempelai.namaPria}</h1>
-        <span className="text-4xl font-script text-wedding-secondary my-2 block">&</span>
-        <h1 className="text-5xl md:text-7xl font-serif text-wedding-primary mb-8">{mempelai.namaWanita}</h1>
-      </div>
 
-      {/* 2. EVENT SECTION */}
+      {/* --- 1. HERO SECTION (Sudah ada animasi manual di dalamnya) --- */}
+      <section className="relative min-h-[100dvh] w-full flex flex-col items-center justify-between py-10 px-6 overflow-hidden">
+        {/* Background Bunga */}
+        <div className="absolute top-0 left-0 w-48 h-48 md:w-80 md:h-80 opacity-50 pointer-events-none animate-fade-up z-0">
+           <FloralCorner className="w-full h-full text-wedding-secondary -translate-x-8 -translate-y-8" />
+        </div>
+        <div className="absolute bottom-0 right-0 w-48 h-48 md:w-80 md:h-80 opacity-50 pointer-events-none animate-fade-up delay-200 z-0">
+           <FloralCorner className="w-full h-full text-wedding-secondary translate-x-8 translate-y-8 rotate-180" />
+        </div>
+
+        {/* Judul Atas */}
+        <div className="w-full h-10 flex items-end justify-center z-10 animate-fade-up delay-100">
+           <p className="tracking-[0.3em] text-[10px] md:text-sm uppercase text-wedding-primary/80">The Wedding Of</p>
+        </div>
+
+        {/* Konten Tengah */}
+        <div className="relative z-10 flex flex-col items-center gap-3 md:gap-6 w-full max-w-2xl">
+          <div className="relative animate-fade-up delay-300">
+            <div className="absolute -inset-2 md:-inset-3 rounded-t-full rounded-b-[10rem] border border-wedding-secondary/50 z-0"></div>
+            <div className="relative w-48 h-64 md:w-72 md:h-[28rem] rounded-t-full rounded-b-[9rem] overflow-hidden shadow-xl z-10 bg-white/40 flex items-center justify-center">
+                {mempelai.fotoSampul && (
+                  <Image 
+                    src={urlFor(mempelai.fotoSampul).width(600).url()} 
+                    alt="Cover" fill className="object-cover" priority
+                  />
+                )}
+            </div>
+          </div>
+          <div className="flex flex-col items-center animate-fade-up delay-500 w-full text-center mt-2">
+            <h1 className="text-4xl md:text-6xl font-script text-wedding-primary">{mempelai.namaPria}</h1>
+            <span className="font-serif text-lg italic text-wedding-secondary">&</span>
+            <h1 className="text-4xl md:text-6xl font-script text-wedding-primary">{mempelai.namaWanita}</h1>
+          </div>
+        </div>
+
+        {/* Scroll Down */}
+        <div className="z-20 flex justify-center animate-fade-up delay-1000 mt-4 h-16">
+           <div className="animate-bounce flex flex-col items-center gap-1">
+             <span className="text-[9px] tracking-[0.2em] uppercase text-wedding-primary/80 font-bold">Scroll Down</span>
+             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 text-wedding-primary">
+               <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3" />
+             </svg>
+           </div>
+        </div>
+      </section>
+
+      {/* --- 2. QURAN SECTION --- */}
+      <Reveal>
+        <QuranSection />
+      </Reveal>
+
+      {/* --- 3. COUPLE SECTION --- */}
+      {/* Tidak perlu dibungkus Reveal lagi, karena di dalamnya sudah ada Reveal */}
+      <CoupleSection data={mempelai} />
+
+      {/* --- 4. LOVE STORY SECTION --- */}
+      {/* Tidak perlu dibungkus Reveal lagi */}
+      <LoveStorySection story={mempelai.loveStory} />
+
+      {/* --- 5. INITIALS PHOTO SECTION --- */}
+      <Reveal>
+        <InitialsSection data={mempelai} />
+      </Reveal>
+
+      {/* --- 6. EVENT SECTION --- */}
+      {/* Tidak perlu dibungkus Reveal lagi */}
       <EventSection data={mempelai} />
 
-      {/* 3. GALLERY SECTION */}
-      <GallerySection images={mempelai.galeri} />
+      {/* --- 7. GALLERY --- */}
+      {/* Gallery bisa dibiarkan satu blok atau dipecah (opsional), kita biarkan satu blok dulu */}
+      <Reveal>
+         <GallerySection images={mempelai.galeri} />
+      </Reveal>
 
-      {/* 4. GUESTBOOK SECTION (Baru!) */}
-      <GuestbookSection ucapan={ucapan} />
+      {/* --- 8. GIFT SECTION --- */}
+      <Reveal>
+         <GiftSection data={mempelai} />
+      </Reveal>
 
-      {/* Footer Manis */}
-      <footer className="py-10 text-center text-gray-500 text-sm">
-        <p>Made with ❤️ by Arga</p>
+      {/* --- 9. GUESTBOOK --- */}
+      <Reveal>
+         <GuestbookSection ucapan={ucapan} />
+      </Reveal>
+
+      <footer className="py-20 text-center bg-wedding-bg border-t border-wedding-secondary/20 mt-10">
+        <p className="font-script text-3xl mb-4 text-wedding-primary">Terima Kasih</p>
+        <p className="font-sans text-xs tracking-[0.2em] opacity-80 uppercase text-wedding-primary">
+          {mempelai.namaPria} & {mempelai.namaWanita}
+        </p>
       </footer>
-
     </main>
   );
 }
