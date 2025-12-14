@@ -6,11 +6,20 @@
   --font-serif: "Playfair Display", serif;
   --font-script: "Great Vibes", cursive;
 
-  /* PALET WARNA BARU (Sesuai Screenshot Palet) */
-  --color-wedding-bg: #F3E0DC;        /* Nude Pink (Background) */
-  --color-wedding-primary: #9A5044;   /* Merah Bata (Teks Utama) */
-  --color-wedding-secondary: #C48F83; /* Soft Brown/Dark Pink (Aksen) */
-  --color-wedding-card: #FFFFFF;      /* Putih bersih */
+  /* PALET BARU: SOFT PINK THEME */
+  
+  /* 1. Background: Pink sangat muda (Hampir putih) agar bersih */
+  --color-wedding-bg: #FFF0F2;
+  
+  /* 2. Utama (Teks & Blok Quran): Dusty Pink / Old Rose
+     Ini versi gelap dari Soft Pink agar tulisan terbaca & Blok Quran terlihat solid */
+  --color-wedding-primary: #B06D76; 
+  
+  /* 3. Aksen: Soft Pink murni (untuk garis, hiasan, tombol sekunder) */
+  --color-wedding-secondary: #E3AAB3; 
+  
+  /* 4. Kartu: Putih bersih */
+  --color-wedding-card: #FFFFFF;
 }
 
 /* Reset standar */
@@ -19,7 +28,7 @@
   color: var(--color-wedding-primary);
 }
 
-/* Scrollbar cantik */
+/* Scrollbar cantik (Pink) */
 .custom-scrollbar::-webkit-scrollbar {
   width: 6px;
 }
@@ -48,7 +57,6 @@
   animation: fadeInUp 1s ease-out forwards;
 }
 
-/* Delay Animasi */
 .delay-100 { animation-delay: 0.1s; }
 .delay-200 { animation-delay: 0.2s; }
 .delay-300 { animation-delay: 0.3s; }
