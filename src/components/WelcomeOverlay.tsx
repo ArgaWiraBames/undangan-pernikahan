@@ -1,116 +1,91 @@
 'use client'
-
-import { useState, useEffect, useRef } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { urlFor } from '@/sanity/image'
 
-export default function WelcomeOverlay({ mempelai }: { mempelai: any }) {
-  const [isOpen, setIsOpen] = useState(true)
-  const [isPlaying, setIsPlaying] = useState(false)
-  const audioRef = useRef<HTMLAudioElement>(null)
-  
-  // Ambil parameter "?to=NamaTamu" dari URL
-  const searchParams = useSearchParams()
-  const namaTamu = searchParams.get('to') || "Tamu Undangan"
+export default function WelcomeOverlay({ mempelai, onOpen }: { mempelai: any, onOpen?: () => void }) {
+  const [isOpen, setIsOpen] = useState(false)
+  const [isVisible, setIsVisible] = useState(true)
 
-  // Kunci scroll saat cover masih terbuka
+  const handleOpen = () => {
+    setIsOpen(true)
+    if (onOpen) onOpen();
+    setTimeout(() => {
+      setIsVisible(false)
+    }, 1000)
+  }
+
   useEffect(() => {
-    if (isOpen) {
+    if (isVisible) {
       document.body.style.overflow = 'hidden'
     } else {
       document.body.style.overflow = 'auto'
     }
-  }, [isOpen])
+  }, [isVisible])
 
-  const bukaUndangan = () => {
-    setIsOpen(false)
-    if (audioRef.current) {
-      audioRef.current.play()
-      setIsPlaying(true)
-    }
-  }
-
-  const toggleMusic = () => {
-    if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.pause()
-      } else {
-        audioRef.current.play()
-      }
-      setIsPlaying(!isPlaying)
-    }
-  }
+  if (!isVisible) return null
 
   return (
-    <>
-      {/* --- 1. OVERLAY FULL SCREEN --- */}
-      <div 
-        className={`fixed inset-0 z-50 bg-wedding-bg flex flex-col items-center justify-center text-center transition-transform duration-1000 ease-in-out ${
-          isOpen ? 'translate-y-0' : '-translate-y-full'
-        }`}
-      >
-        {/* Background Foto Samar */}
-        {mempelai.fotoSampul && (
-          <div className="absolute inset-0 opacity-20">
-            <Image 
-               src={urlFor(mempelai.fotoSampul).width(800).url()} 
-               alt="Background"
-               fill
-               className="object-cover grayscale"
-            />
-          </div>
-        )}
+    <div 
+      className={`fixed inset-0 z-50 flex flex-col items-center justify-center bg-wedding-bg text-wedding-primary transition-transform duration-1000 ease-in-out ${isOpen ? '-translate-y-full' : 'translate-y-0'} px-6`}
+    >
+        {/* CONTAINER UTAMA */}
+        <div className="flex flex-col items-center justify-center w-full max-w-md mx-auto gap-6 md:gap-8">
 
-        <div className="relative z-10 px-6">
-          <h3 className="text-xl tracking-widest text-gray-600 mb-4">THE WEDDING OF</h3>
-          
-          <div className="font-serif text-5xl text-wedding-primary mb-8">
-            <p>{mempelai.namaPria}</p>
-            <span className="font-script text-4xl text-wedding-secondary">&</span>
-            <p>{mempelai.namaWanita}</p>
-          </div>
+            {/* 1. FOTO BULAT */}
+            <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-[4px] border-white shadow-xl animate-fade-up">
+              {mempelai.fotoSampul && (
+                <Image 
+                  src={urlFor(mempelai.fotoSampul).width(400).url()} 
+                  alt="Cover" fill className="object-cover"
+                />
+              )}
+            </div>
 
-          <div className="bg-white/80 backdrop-blur-sm p-6 rounded-xl shadow-lg border border-wedding-secondary/30">
-            <p className="text-gray-600 text-sm mb-2">Kepada Yth Bapak/Ibu/Saudara/i:</p>
-            <h2 className="text-2xl font-bold text-gray-800 mb-6 capitalize">
-              {namaTamu}
-            </h2>
+            {/* 2. NAMA MEMPELAI (Revisi Layout Vertikal) */}
+            <div className="flex flex-col items-center text-center animate-fade-up delay-100 px-2 gap-1">
+              {/* Nama Pria Lengkap */}
+              <h1 className="font-script text-3xl md:text-5xl leading-tight">
+                {mempelai.namaLengkapPria || mempelai.namaPria}
+              </h1>
+              
+              {/* Simbol & */}
+              <span className="font-serif text-lg italic text-wedding-secondary my-1">
+                &
+              </span>
+              
+              {/* Nama Wanita Lengkap */}
+              <h1 className="font-script text-3xl md:text-5xl leading-tight">
+                {mempelai.namaLengkapWanita || mempelai.namaWanita}
+              </h1>
+
+              <p className="font-serif text-[10px] md:text-xs tracking-[0.2em] uppercase opacity-70 mt-3">
+                The Wedding Celebration
+              </p>
+            </div>
             
+            {/* 3. KOTAK TAMU */}
+            <div className="w-full animate-fade-up delay-200">
+              <div className="bg-white/60 backdrop-blur-sm border border-wedding-secondary/30 rounded-xl p-5 text-center shadow-sm mx-6">
+                <p className="text-[10px] md:text-xs tracking-[0.2em] uppercase mb-2 opacity-80">
+                  Kepada Yth. Bapak/Ibu/Saudara/i
+                </p>
+                <h3 className="font-serif text-lg md:text-xl text-wedding-primary font-bold">
+                  Tamu Undangan
+                </h3>
+              </div>
+            </div>
+
+            {/* 4. TOMBOL BUKA */}
             <button 
-              onClick={bukaUndangan}
-              className="bg-wedding-primary text-white px-8 py-3 rounded-full font-bold shadow-lg hover:scale-105 transition-transform flex items-center gap-2 mx-auto"
+              onClick={handleOpen}
+              className="mt-2 px-8 py-3 bg-wedding-primary text-white rounded-full text-xs font-bold uppercase tracking-widest hover:scale-105 transition-transform shadow-lg animate-fade-up delay-300 flex items-center gap-2"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
-              </svg>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 19v-8.93a2 2 0 01.89-1.664l7-4.666a2 2 0 012.22 0l7 4.666A2 2 0 0121 10.07V19M3 19a2 2 0 002 2h14a2 2 0 002-2M3 19l6.75-4.5M21 19l-6.75-4.5M3 10l6.75 4.5M21 10l-6.75 4.5m0 0l-1.14.76a2 2 0 01-2.22 0l-1.14-.76" /></svg>
               Buka Undangan
             </button>
-          </div>
+
         </div>
-      </div>
-
-      {/* --- 2. TOMBOL MUSIK MENGAMBANG --- */}
-      {!isOpen && (
-        <button
-          onClick={toggleMusic}
-          className="fixed bottom-6 right-6 z-40 bg-white p-3 rounded-full shadow-xl border border-gray-200 animate-spin-slow"
-          style={{ animationDuration: '3s', animationPlayState: isPlaying ? 'running' : 'paused' }}
-        >
-          {isPlaying ? (
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-wedding-primary">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 5.25v13.5m-7.5-13.5v13.5" />
-            </svg>
-          ) : (
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-gray-400">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
-            </svg>
-          )}
-        </button>
-      )}
-
-      {/* Audio Element (Tersembunyi) */}
-      <audio ref={audioRef} src="/musik.mp3" loop />
-    </>
+    </div>
   )
 }

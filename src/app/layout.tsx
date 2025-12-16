@@ -1,34 +1,26 @@
 import type { Metadata } from "next";
-// 1. Import Font dari Google
-import { Inter, Playfair_Display, Great_Vibes } from "next/font/google";
+// 1. GANTI IMPORT: Panggil Alex_Brush
+import { Inter, Playfair_Display, Alex_Brush } from "next/font/google"; 
 import "./globals.css";
 
-// 2. Konfigurasi Font
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-sans", // Ini akan masuk ke variabel CSS Tailwind
-  display: "swap",
+const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
+const playfair = Playfair_Display({ subsets: ["latin"], variable: "--font-serif" });
+
+// 2. INISIALISASI ALEX BRUSH
+const alexBrush = Alex_Brush({ 
+  weight: "400", 
+  subsets: ["latin"], 
+  // Tetap gunakan nama variable '--font-script' agar CSS lain tidak perlu diubah
+  variable: "--font-script" 
 });
 
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  variable: "--font-serif",
-  display: "swap",
-});
-
-const greatVibes = Great_Vibes({
-  weight: "400",
-  subsets: ["latin"],
-  variable: "--font-script",
-  display: "swap",
-});
-
-// 3. Metadata (Judul & Deskripsi untuk Link WA)
 export const metadata: Metadata = {
-  title: "The Wedding of Arga & Hana", // Ganti sesuai nama pengantin
-  description: "Kami mengundang Anda untuk hadir di momen bahagia kami. Mohon doa restu.",
+  title: "The Wedding of Arga & Hana",
+  description: "Official Wedding Invitation",
   icons: {
-    icon: "/favicon.jpg", // Pastikan ada file icon jika mau
+    icon: '/icon.png',
+    shortcut: '/icon.png',
+    apple: '/icon.png',
   },
 };
 
@@ -38,9 +30,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    // 4. Masukkan variabel font ke dalam tag HTML
-    <html lang="id" className={`${inter.variable} ${playfair.variable} ${greatVibes.variable}`}>
-      <body className="antialiased">
+    <html lang="id">
+      {/* 3. MASUKKAN VARIABLE ALEX BRUSH KE BODY */}
+      <body className={`${inter.variable} ${playfair.variable} ${alexBrush.variable} antialiased custom-scrollbar`}>
         {children}
       </body>
     </html>

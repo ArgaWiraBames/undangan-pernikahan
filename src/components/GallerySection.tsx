@@ -19,6 +19,10 @@ export default function GallerySection({ images }: { images: any[] }) {
 
   return (
     <section className="py-20 px-4 bg-white overflow-hidden">
+      {/* HIASAN BUNGA */}
+      <div className="absolute top-0 right-0 w-32 md:w-48 opacity-70 pointer-events-none rotate-90">
+         <Image src="/decor/bunga-pojok-kiri-atas.png" alt="Decor" width={200} height={200} />
+      </div>
       <div className="max-w-6xl mx-auto text-center">
         <h2 className="text-4xl font-serif text-wedding-primary mb-4 tracking-wide">
           OUR MOMENTS

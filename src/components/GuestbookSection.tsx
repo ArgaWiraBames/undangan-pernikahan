@@ -2,6 +2,7 @@
 
 import { kirimUcapan } from "@/app/actions" // Import fungsi server tadi
 import { useRef, useState } from "react"
+import Image from "next/image";
 
 export default function GuestbookSection({ ucapan }: { ucapan: any[] }) {
   const formRef = useRef<HTMLFormElement>(null)
@@ -25,11 +26,13 @@ export default function GuestbookSection({ ucapan }: { ucapan: any[] }) {
   }
 
   return (
-    <section className="py-20 px-4 bg-wedding-bg">
-      <div className="max-w-2xl mx-auto">
-        <h2 className="text-4xl font-script text-wedding-secondary text-center mb-10">
-          Wishes & Prayers
-        </h2>
+    <section className="relative py-20 px-6 bg-white overflow-hidden">
+      {/* HIASAN BUNGA BAWAH KIRI */}
+      <div className="absolute bottom-0 left-0 w-32 md:w-48 opacity-60 pointer-events-none">
+         <Image src="/decor/bunga-pojok-kanan-bawah.png" alt="Decor" width={200} height={200} />
+      </div>
+      <div className="max-w-2xl mx-auto relative z-10">
+        <h2 className="text-center font-script text-4xl text-wedding-primary mb-8">Wishes & Prayers</h2>
 
         {/* --- FORMULIR --- */}
         <div className="bg-white p-6 rounded-xl shadow-md mb-12">

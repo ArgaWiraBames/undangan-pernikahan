@@ -1,10 +1,13 @@
 import { Suspense } from 'react';
 import { client } from "@/sanity/client";
-import { urlFor } from "@/sanity/image";
+import { urlFor } from "@/sanity/image"; // Masih dipakai untuk prop lain jika perlu
 import Image from "next/image";
 
-// Import Semua Komponen
-import WelcomeOverlay from "@/components/WelcomeOverlay";
+
+// Import Komponen Baru
+import HeroWithVideo from "@/components/HeroWithVideo";
+
+// Import Komponen Lainnya (TETAP SAMA)
 import QuranSection from "@/components/QuranSection";
 import CoupleSection from "@/components/CoupleSection";
 import LoveStorySection from "@/components/LoveStorySection";
@@ -14,9 +17,17 @@ import GallerySection from "@/components/GallerySection";
 import GiftSection from "@/components/GiftSection";
 import GuestbookSection from "@/components/GuestbookSection";
 import Reveal from "@/components/Reveal"; 
-import { FloralCorner } from "@/components/Icons"; // Masih di-import untuk divider
+import { FloralCorner } from "@/components/Icons"; 
 
 export const revalidate = 0; 
+
+// Fungsi Helper URL
+function getFileUrl(source: any) {
+  if (!source || !source.asset || !source.asset._ref) return null;
+  const ref = source.asset._ref;
+  const [, id, extension] = ref.split('-');
+  return `https://cdn.sanity.io/files/${client.config().projectId}/${client.config().dataset}/${id}.${extension}`;
+}
 
 async function getData() {
   const query = `{
@@ -31,56 +42,23 @@ export default async function Home() {
   
   if (!mempelai) return <div className="text-center p-20">Loading Data...</div>;
 
+  const videoDesktopUrl = getFileUrl(mempelai.videoDesktop);
+  const videoMobileUrl = getFileUrl(mempelai.videoMobile);
+  const audioUrl = getFileUrl(mempelai.audio); // AMBIL URL AUDIO
+
   return (
     <main className="min-h-screen bg-wedding-bg text-wedding-primary overflow-x-hidden font-sans">
       
       <Suspense fallback={null}>
-        <WelcomeOverlay mempelai={mempelai} />
+        <HeroWithVideo 
+          mempelai={mempelai} 
+          videoDesktopUrl={videoDesktopUrl}
+          videoMobileUrl={videoMobileUrl}
+          audioUrl={audioUrl} // KIRIM KE COMPONENT
+        />
       </Suspense>
 
-      {/* --- 1. HERO SECTION (REVISI MOBILE) --- */}
-<section className="relative min-h-[100dvh] w-full flex flex-col items-center justify-center py-10 px-6 overflow-hidden gap-6 md:gap-8">
-  
-  {/* Judul Atas (Jarak didekatkan) */}
-  <div className="z-10 animate-fade-up delay-100 mt-10 md:mt-0">
-      <p className="tracking-[0.3em] text-[15px] uppercase text-wedding-primary/80">The Wedding Of</p>
-  </div>
-
-  {/* Konten Tengah (Foto & Nama) */}
-  <div className="relative z-10 flex flex-col items-center gap-4 w-full max-w-2xl">
-    <div className="relative animate-fade-up delay-300">
-      {/* Bingkai CSS Tipis */}
-      <div className="absolute -inset-2 md:-inset-3 rounded-t-full rounded-b-[10rem] border border-wedding-secondary/50 z-0"></div>
-      
-      {/* Wadah Foto */}
-      <div className="relative w-48 h-64 md:w-72 md:h-[28rem] rounded-t-full rounded-b-[9rem] overflow-hidden shadow-xl z-10 bg-white/40 flex items-center justify-center">
-          {mempelai.fotoSampul && (
-            <Image 
-              src={urlFor(mempelai.fotoSampul).width(600).url()} 
-              alt="Cover" fill className="object-cover" priority
-            />
-          )}
-      </div>
-    </div>
-
-    {/* Nama Pengantin */}
-    <div className="flex flex-col items-center animate-fade-up delay-500 w-full text-center mt-3 md:mt-4">
-            <h1 className="text-4xl md:text-6xl font-script text-wedding-primary">{mempelai.namaPria}</h1>
-            <span className="font-serif text-lg italic text-wedding-secondary py-1">&</span>
-            <h1 className="text-4xl md:text-6xl font-script text-wedding-primary">{mempelai.namaWanita}</h1>
-          </div>
-  </div>
-
-  {/* Scroll Down (Ditempelkan lebih dekat ke nama) */}
-  <div className="z-20 flex justify-center animate-fade-up delay-1000 mt-2 md:mt-4">
-      <div className="animate-bounce flex flex-col items-center gap-1">
-        <span className="text-[9px] tracking-[0.2em] uppercase text-wedding-primary/80 font-bold">Scroll Down</span>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 text-wedding-primary">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3" />
-        </svg>
-      </div>
-  </div>
-</section>
+      {/* --- SISA SECTION KE BAWAH TETAP SAMA --- */}
 
       {/* --- 2. QURAN SECTION --- */}
       <Reveal>
@@ -122,12 +100,80 @@ export default async function Home() {
          <GuestbookSection ucapan={ucapan} />
       </Reveal>
 
-      {/* Footer */}
-      <footer className="py-20 text-center bg-wedding-bg border-t border-wedding-secondary/20 mt-10">
-        <p className="font-script text-3xl mb-4 text-wedding-primary">Terima Kasih</p>
-        <p className="font-sans text-xs tracking-[0.2em] opacity-80 uppercase text-wedding-primary">
-          {mempelai.namaPria} & {mempelai.namaWanita}
-        </p>
+      {/* --- 10. CLOSING SECTION (PENUTUP REVISI) --- */}
+      <footer className="relative py-24 px-6 bg-wedding-bg text-center overflow-hidden flex flex-col items-center">
+
+        {/* Hiasan Bunga */}
+        <div className="absolute bottom-0 left-0 w-32 md:w-48 opacity-60 pointer-events-none mix-blend-multiply">
+           <Image src="/decor/bunga-pojok-kanan-bawah.png" alt="Decor" width={200} height={200} />
+        </div>
+        <div className="absolute top-0 right-0 w-32 md:w-48 opacity-60 pointer-events-none mix-blend-multiply rotate-180">
+           <Image src="/decor/bunga-pojok-kanan-bawah.png" alt="Decor" width={200} height={200} />
+        </div>
+
+        <Reveal>
+          <div className="max-w-2xl mx-auto space-y-10 flex flex-col items-center relative z-10">
+
+            {/* Foto Penutup (Arch) */}
+            <div className="relative w-56 h-72 md:w-72 md:h-96 rounded-t-full rounded-b-[2rem] overflow-hidden border-[6px] border-white shadow-xl">
+               {mempelai.fotoSampul && (
+                 <Image 
+                   src={urlFor(mempelai.fotoSampul).width(600).url()} 
+                   alt="Closing Photo" fill className="object-cover"
+                 />
+               )}
+               <div className="absolute inset-0 bg-gradient-to-t from-wedding-primary/20 to-transparent"></div>
+            </div>
+
+            {/* Ucapan Terima Kasih */}
+            <div className="space-y-6 px-4">
+              <h2 className="font-script text-4xl md:text-6xl text-wedding-primary mb-2">
+                Terima Kasih
+              </h2>
+              
+              <div className="text-sm md:text-base text-gray-600 leading-relaxed space-y-4 font-serif italic">
+                <p>
+                  "Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir untuk memberikan doa restu kepada kami."
+                </p>
+                <p>
+                  Atas kehadiran dan doa restu yang telah diberikan, kami ucapkan terima kasih yang sebesar-besarnya. Semoga Allah SWT membalas segala kebaikan Bapak/Ibu/Saudara/i dengan keberkahan yang berlipat ganda.
+                </p>
+              </div>
+            </div>
+
+            {/* Salam Penutup & Tanda Tangan (VERTIKAL) */}
+            <div className="pt-6 space-y-3 border-t border-wedding-secondary/30 w-full max-w-md mx-auto flex flex-col items-center">
+               <p className="font-bold text-wedding-primary uppercase tracking-widest text-[10px] md:text-xs mb-4">
+                 Wassalamu’alaikum Warahmatullahi Wabarakatuh
+               </p>
+               
+               <p className="font-serif text-lg text-gray-500">
+                 Kami yang berbahagia,
+               </p>
+               
+               {/* Nama Mempelai Susun Ke Bawah */}
+               <div className="flex flex-col items-center py-2 gap-1">
+                 <h3 className="font-script text-3xl md:text-5xl text-wedding-primary leading-tight">
+                   {mempelai.namaLengkapPria || mempelai.namaPria}
+                 </h3>
+                 
+                 <span className="font-serif text-lg italic text-wedding-secondary my-1">
+                   &
+                 </span>
+                 
+                 <h3 className="font-script text-3xl md:text-5xl text-wedding-primary leading-tight">
+                   {mempelai.namaLengkapWanita || mempelai.namaWanita}
+                 </h3>
+               </div>
+               
+               <p className="text-[10px] tracking-[0.2em] uppercase text-gray-400">
+                  Beserta Keluarga Besar
+               </p>
+            </div>
+
+          </div>
+        </Reveal>
+        
       </footer>
     </main>
   );

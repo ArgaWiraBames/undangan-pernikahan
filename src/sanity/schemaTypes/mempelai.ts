@@ -9,6 +9,24 @@ export default defineType({
     defineField({ name: 'namaPria', title: 'Nama Panggilan Pria', type: 'string' }),
     defineField({ name: 'namaWanita', title: 'Nama Panggilan Wanita', type: 'string' }),
     defineField({ name: 'tanggal', title: 'Tanggal Acara', type: 'date', options: { dateFormat: 'DD-MM-YYYY' } }),
+    defineField({ 
+      name: 'videoDesktop', 
+      title: 'Video Cover (Desktop/Laptop - Landscape)', 
+      type: 'file', 
+      options: { accept: 'video/mp4' } 
+    }),
+    defineField({ 
+      name: 'videoMobile', 
+      title: 'Video Cover (HP - Portrait)', 
+      type: 'file', 
+      options: { accept: 'video/mp4' } 
+    }),
+    defineField({ 
+      name: 'audio', 
+      title: 'Lagu Latar (Backsound)', 
+      type: 'file', 
+      options: { accept: 'audio/*' } 
+    }),
     defineField({ name: 'fotoSampul', title: 'Foto Cover Utama', type: 'image', options: { hotspot: true } }),
 
     // --- 2. QURAN & INISIAL (BARU!) ---

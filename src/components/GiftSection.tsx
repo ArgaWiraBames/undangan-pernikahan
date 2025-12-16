@@ -1,5 +1,6 @@
 'use client'
 import { useState } from "react";
+import Image from "next/image";
 
 function BankCard({ bank, number, name }: { bank: string, number: string, name: string }) {
   const [copied, setCopied] = useState(false);
@@ -32,11 +33,18 @@ function BankCard({ bank, number, name }: { bank: string, number: string, name: 
 
 export default function GiftSection({ data }: { data: any }) {
   return (
-    <section className="py-20 px-6 bg-wedding-bg text-center">
-      <h2 className="font-serif text-3xl text-wedding-primary mb-2">Wedding Gift</h2>
-      <p className="text-sm text-gray-600 mb-10 max-w-md mx-auto">
+    <section className="relative py-20 px-6 bg-wedding-bg text-center overflow-hidden">
+      {/* HIASAN BUNGA TENGAH */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 opacity-50 w-40 md:w-56 pointer-events-none">
+         <Image src="/decor/bunga-tengah.png" alt="Decor" width={250} height={100} />
+      </div>
+      <div className="relative z-10 mt-8">
+        <h2 className="font-serif text-3xl text-wedding-primary mb-2">Wedding Gift</h2>
+         <p className="text-sm text-gray-600 mb-10 max-w-md mx-auto">
         Doa restu Anda merupakan karunia yang sangat berarti bagi kami. Dan jika memberi adalah ungkapan tanda kasih Anda, Anda dapat memberi kado secara cashless.
       </p>
+      </div>
+     
 
       <div className="flex flex-col md:flex-row justify-center items-center gap-6">
         <BankCard bank={data.bank1} number={data.norek1} name={data.atasnama1} />
