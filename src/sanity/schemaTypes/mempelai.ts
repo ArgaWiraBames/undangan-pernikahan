@@ -29,6 +29,14 @@ export default defineType({
     }),
     defineField({ name: 'fotoSampul', title: 'Foto Cover Utama', type: 'image', options: { hotspot: true } }),
 
+    defineField({ 
+      name: 'fotoSampulMobile', 
+      title: 'Foto Cover Mobile (HP/Portrait)', 
+      type: 'image', 
+      description: 'Khusus untuk tampilan HP agar foto tidak terpotong.',
+      options: { hotspot: true } 
+    }),
+
     // --- 2. QURAN & INISIAL (BARU!) ---
     defineField({ 
       name: 'fotoInisial', 
@@ -87,6 +95,47 @@ export default defineType({
     defineField({ name: 'atasnama2', title: 'Atas Nama 2', type: 'string' }),
     defineField({ name: 'alamatKado', title: 'Alamat Kado', type: 'text' }),
     
-    defineField({ name: 'galeri', title: 'Galeri Foto', type: 'array', of: [{ type: 'image' }] }),
+    defineField({
+      name: 'galeri',
+      title: 'Galeri Foto',
+      type: 'array',
+      options: {
+        layout: 'grid', // Membuat tampilannya rapi berbentuk grid di Sanity
+      },
+      of: [
+        {
+          type: 'image',
+          options: { hotspot: true },
+          fields: [
+            {
+              name: 'ukuran',
+              title: 'Ukuran Bingkai (Grid)',
+              type: 'string',
+              description: 'Pilih ukuran foto ini saat ditampilkan di website.',
+              options: {
+                list: [
+                  { title: 'Standar (1 Kotak)', value: 'standar' },
+                  { title: 'Lebar (Makan 2 Kolom)', value: 'lebar' },
+                  { title: 'Tinggi (Makan 2 Baris)', value: 'tinggi' },
+                ],
+                layout: 'radio',
+              },
+              initialValue: 'standar', // Default ukuran
+            }
+          ]
+        }
+      ]
+    }),
+
+    // --- 7. FOOTER / PENUTUP ---
+    defineField({
+      name: 'fotoPenutup',
+      title: 'Foto Penutup (Footer)',
+      type: 'image',
+      description: 'Foto yang akan tampil di bagian paling bawah undangan (Terima Kasih).',
+      options: {
+        hotspot: true,
+      },
+    }),
   ],
 })
