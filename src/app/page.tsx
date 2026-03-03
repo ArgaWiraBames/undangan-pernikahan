@@ -31,8 +31,10 @@ function getFileUrl(source: any) {
 async function getData() {
   const query = `{
     "mempelai": *[_type == "mempelai"][0]{
-    fotoSampulMobile,
-    }
+      ...,
+      fotoSampulMobile,
+      fotoPenutup
+    },
     "ucapan": *[_type == "ucapan"] | order(waktu desc)
   }`;
   return await client.fetch(query);
