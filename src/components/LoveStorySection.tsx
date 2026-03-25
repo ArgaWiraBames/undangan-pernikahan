@@ -26,6 +26,10 @@ const getIllustration = (title: string) => {
 
 export default function LoveStorySection({ story }: { story: any[] }) {
   const [index, setIndex] = useState(-1);
+  
+  // STATE BARU: Untuk melacak cerita mana yang sedang di-expand (dibuka)
+  const [expandedStories, setExpandedStories] = useState<{ [key: number]: boolean }>({});
+
   if (!story || story.length === 0) return null;
 
   const slides = story
@@ -37,6 +41,17 @@ export default function LoveStorySection({ story }: { story: any[] }) {
      const clickIndex = slides.findIndex(s => s.src === urlFor(fotoSource).width(1200).url());
      if(clickIndex >= 0) setIndex(clickIndex);
   };
+
+  // FUNGSI BARU: Untuk toggle buka/tutup teks cerita
+  const toggleReadMore = (i: number) => {
+    setExpandedStories(prev => ({
+      ...prev,
+      [i]: !prev[i] // Membalikkan nilai (true jadi false, false jadi true)
+    }));
+  };
+
+  // Batas karakter sebelum dipotong (Silakan ubah angka 250 ini jika ingin lebih panjang/pendek)
+  const MAX_LENGTH = 250; 
 
   return (
     <section className="relative py-16 md:py-24 px-6 bg-[#faeee0]/68 overflow-hidden">
@@ -51,15 +66,15 @@ export default function LoveStorySection({ story }: { story: any[] }) {
         }
         .petal {
           position: absolute;
-          background-color: #fca5a5; /* Warna pink pastel */
-          border-radius: 15px 0 15px 0; /* Bentuk kelopak */
+          background-color: #fca5a5; 
+          border-radius: 15px 0 15px 0; 
           width: 12px;
           height: 12px;
           box-shadow: 0 0 5px rgba(255,182,193,0.3);
           animation: fall linear infinite;
           z-index: 1;
           opacity: 0;
-          pointer-events: none; /* Agar tidak mengganggu klik tamu */
+          pointer-events: none; 
         }
       `}</style>
 
@@ -69,10 +84,10 @@ export default function LoveStorySection({ story }: { story: any[] }) {
           key={i} 
           className="petal" 
           style={{
-            left: `${(i * 11) % 100}%`, // Menyebar dari kiri ke kanan
-            top: `-${(i * 5) % 10}vh`, // Mulai dari atas layar yang berbeda-beda
-            animationDuration: `${15 + (i % 5) * 3}s`, // Kecepatan jatuh bervariasi
-            animationDelay: `${(i % 7) * 2}s` // Waktu mulai bervariasi
+            left: `${(i * 11) % 100}%`, 
+            top: `-${(i * 5) % 10}vh`, 
+            animationDuration: `${15 + (i % 5) * 3}s`, 
+            animationDelay: `${(i % 7) * 2}s` 
           }}
         ></div>
       ))}
@@ -97,6 +112,11 @@ export default function LoveStorySection({ story }: { story: any[] }) {
         <div className="flex flex-col gap-12">
           {story.map((item, i) => {
              const ilustrasiImg = getIllustration(item.judul || "");
+             
+             // Logika Pemotongan Teks
+             const ceritaText = item.cerita || "";
+             const isLongText = ceritaText.length > MAX_LENGTH;
+             const isExpanded = expandedStories[i];
              
              return (
               <Reveal key={i} delay={i % 2 === 0 ? "delay-100" : "delay-200"}>
@@ -132,7 +152,28 @@ export default function LoveStorySection({ story }: { story: any[] }) {
                       {item.tahun}
                     </span>
                     <h3 className="font-serif text-xl md:text-2xl text-wedding-primary mb-2 md:mb-3">{item.judul}</h3>
-                    <p className="text-gray-600 text-sm leading-relaxed">{item.cerita}</p>
+                    
+                    {/* PARAGRAF CERITA (Dengan fitur Collapse) */}
+                    <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-wrap transition-all duration-300">
+                      {isLongText && !isExpanded 
+                        ? `${ceritaText.substring(0, MAX_LENGTH)}...` 
+                        : ceritaText}
+                    </p>
+
+                    {/* TOMBOL BACA SELENGKAPNYA (Hanya muncul jika teksnya panjang) */}
+                    {isLongText && (
+                      <button 
+                        onClick={() => toggleReadMore(i)}
+                        className="mt-3 text-[11px] font-bold tracking-wider uppercase text-wedding-secondary hover:text-wedding-primary transition-colors focus:outline-none flex items-center gap-1"
+                      >
+                        {isExpanded ? (
+                          <>Sembunyikan <span className="text-lg leading-none mb-1">↑</span></>
+                        ) : (
+                          <>Baca Selengkapnya <span className="text-lg leading-none mb-1">↓</span></>
+                        )}
+                      </button>
+                    )}
+
                   </div>
 
                 </div>
