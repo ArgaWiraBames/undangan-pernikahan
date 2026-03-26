@@ -104,7 +104,7 @@ export default async function Home() {
          <GuestbookSection ucapan={ucapan} />
       </Reveal>
 
-      {/* --- 10. CLOSING SECTION (PENUTUP REVISI GRAND FINALE) --- */}
+      {/* --- 10. CLOSING SECTION (PENUTUP) --- */}
       <footer className="relative py-24 px-6 bg-[#faeee0]/68 text-center overflow-hidden flex flex-col items-center">
 
         {/* --- OPSI DEKORASI BINTANG KILAU --- */}
@@ -119,14 +119,14 @@ export default async function Home() {
 
             {/* --- FOTO PENUTUP DENGAN BINGKAI BUNGA --- */}
             <div className="relative mb-12 group animate-fade-up">
-               {/* Dekorasi Bunga Kiri Atas */}
-               <div className="absolute -top-10 -left-12 w-32 md:w-40 z-20 pointer-events-none drop-shadow-md group-hover:-rotate-3 transition-transform duration-500">
-                  <Image src="/decor/bunga-pojok-kiri-atas.png" alt="Decor" width={200} height={200} className="object-contain" />
+               {/* Dekorasi Bunga Kiri Atas (Telah disesuaikan agar menempel sempurna) */}
+               <div className="absolute -top-4 -left-4 md:-top-6 md:-left-8 w-28 md:w-36 z-20 pointer-events-none drop-shadow-md group-hover:-rotate-3 transition-transform duration-500">
+                  <Image src="/decor/bunga-pojok-kiri-atas.png" alt="Decor" width={200} height={200} className="object-contain scale-110" />
                </div>
                
-               {/* Dekorasi Bunga Kanan Bawah */}
-               <div className="absolute -bottom-8 -right-12 w-32 md:w-40 z-20 pointer-events-none drop-shadow-md group-hover:rotate-3 transition-transform duration-500">
-                  <Image src="/decor/bunga-pojok-kanan-bawah.png" alt="Decor" width={200} height={200} className="object-contain" />
+               {/* Dekorasi Bunga Kanan Bawah (Telah disesuaikan agar menempel sempurna) */}
+               <div className="absolute -bottom-4 -right-4 md:-bottom-6 md:-right-8 w-28 md:w-36 z-20 pointer-events-none drop-shadow-md group-hover:rotate-3 transition-transform duration-500">
+                  <Image src="/decor/bunga-pojok-kanan-bawah.png" alt="Decor" width={200} height={200} className="object-contain scale-110" />
                </div>
 
                {/* Bingkai Foto */}

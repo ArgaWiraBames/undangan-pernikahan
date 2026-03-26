@@ -1,4 +1,4 @@
-'use client'; // Wajib ditambahkan jika menggunakan CSS/Style internal atau efek animasi
+'use client'; 
 
 import Link from 'next/link';
 import { MapPinIcon, ClockIcon } from "@/components/Icons"; 
@@ -6,7 +6,6 @@ import Reveal from "@/components/Reveal";
 import Countdown from "@/components/Countdown";
 import Image from "next/image";
 
-// Helper function untuk Google Calendar Link
 const createCalendarLink = (title: string, date: string, location: string, details: string) => {
   const eventDate = new Date(date);
   const start = eventDate.toISOString().replace(/-|:|\.\d\d\d/g, "");
@@ -14,10 +13,20 @@ const createCalendarLink = (title: string, date: string, location: string, detai
   return `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${start}/${end}&details=${encodeURIComponent(details)}&location=${encodeURIComponent(location)}`;
 };
 
-// --- COMPONENT EVENT CARD ---
-function EventCard({ title, date, location, address, mapsUrl }: any) {
+// --- COMPONENT EVENT CARD (Ditambahkan properti endDate) ---
+function EventCard({ title, date, endDate, location, address, mapsUrl }: any) {
   const eventDate = new Date(date);
   
+  // Format waktu mulai
+  const startTimeStr = eventDate.toLocaleTimeString("id-ID", { hour: '2-digit', minute: '2-digit' });
+  
+  // LOGIKA CERDAS: Cek apakah ada data waktu selesai dari Sanity
+  let endTimeStr = "Selesai"; // Default jika tidak diisi
+  if (endDate) {
+    const endObj = new Date(endDate);
+    endTimeStr = endObj.toLocaleTimeString("id-ID", { hour: '2-digit', minute: '2-digit' });
+  }
+
   return (
     <div className="bg-white p-8 md:p-10 rounded-t-full rounded-b-[3rem] border border-wedding-secondary/20 shadow-lg flex flex-col items-center text-center gap-5 relative overflow-hidden group">
       
@@ -42,9 +51,10 @@ function EventCard({ title, date, location, address, mapsUrl }: any) {
         </p>
       </div>
 
+      {/* TAMPILAN WAKTU DINAMIS */}
       <div className="flex items-center gap-2 text-wedding-primary font-medium bg-[#faeee0]/68 px-5 py-2 rounded-full z-10">
         <ClockIcon className="w-5 h-5 text-wedding-secondary" />
-        <span>{eventDate.toLocaleTimeString("id-ID", { hour: '2-digit', minute: '2-digit' })} WIB</span>
+        <span>{startTimeStr} - {endTimeStr} WIB</span>
       </div>
 
       <div className="flex flex-col items-center gap-2 mt-2 z-10">
@@ -74,7 +84,7 @@ export default function EventSection({ data }: { data: any }) {
   return (
     <section className="py-24 px-4 bg-[#faeee0]/68 overflow-hidden relative">
       
-      {/* --- CSS UNTUK ANIMASI KELOPAK BUNGA (OPSI 3) --- */}
+      {/* --- CSS UNTUK ANIMASI KELOPAK BUNGA --- */}
       <style jsx>{`
         @keyframes fall {
           0% { transform: translateY(-10vh) rotate(0deg) scale(0.6); opacity: 0; }
@@ -84,8 +94,8 @@ export default function EventSection({ data }: { data: any }) {
         }
         .petal {
           position: absolute;
-          background-color: #fca5a5; /* Warna pink pastel */
-          border-radius: 15px 0 15px 0; /* Bentuk kelopak */
+          background-color: #fca5a5;
+          border-radius: 15px 0 15px 0;
           width: 15px;
           height: 15px;
           box-shadow: 0 0 8px rgba(255,182,193,0.5);
@@ -101,19 +111,17 @@ export default function EventSection({ data }: { data: any }) {
           key={i} 
           className="petal" 
           style={{
-            left: `${(i * 7.5) % 100}%`, // Menyebar dari kiri ke kanan
-            animationDuration: `${12 + (i % 5) * 3}s`, // Kecepatan jatuh bervariasi
-            animationDelay: `${(i % 7) * 2}s` // Waktu mulai bervariasi
+            left: `${(i * 7.5) % 100}%`,
+            animationDuration: `${12 + (i % 5) * 3}s`,
+            animationDelay: `${(i % 7) * 2}s`
           }}
         ></div>
       ))}
 
-      {/* --- OPSI 1: WATERMARK RAKSASA --- */}
-      {/* Kiri Atas */}
+      {/* --- WATERMARK RAKSASA --- */}
       <div className="absolute top-0 left-0 -translate-x-1/4 -translate-y-1/4 w-[400px] md:w-[600px] opacity-[0.08] pointer-events-none z-0">
         <Image src="/decor/bunga-pojok-kiri-atas.png" alt="Watermark" width={600} height={600} />
       </div>
-      {/* Kanan Bawah */}
       <div className="absolute bottom-0 right-0 translate-x-1/4 translate-y-1/4 w-[400px] md:w-[600px] opacity-[0.08] pointer-events-none z-0">
         <Image src="/decor/bunga-pojok-kanan-bawah.png" alt="Watermark" width={600} height={600} />
       </div>
@@ -133,17 +141,16 @@ export default function EventSection({ data }: { data: any }) {
         </div>
       </Reveal>
       
-      {/* Layout Kartu Diubah Menjadi Flex untuk menyelipkan Divider */}
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-center gap-8 md:gap-4 lg:gap-12 px-4 relative z-20">
         
-        {/* KARTU 1: AKAD */}
+        {/* KARTU 1: AKAD (Ditambahkan data.waktuSelesaiAkad) */}
         <div className="flex-1 w-full max-w-md">
           <Reveal delay="delay-100">
-            <EventCard title="Akad Nikah" date={data.waktuAkad} location={data.lokasiAkad} address={data.alamatAkad} mapsUrl={data.mapsAkad} />
+            <EventCard title="Akad Nikah" date={data.waktuAkad} endDate={data.waktuSelesaiAkad} location={data.lokasiAkad} address={data.alamatAkad} mapsUrl={data.mapsAkad} />
           </Reveal>
         </div>
 
-        {/* --- OPSI 2: DIVIDER PEMBATAS --- */}
+        {/* --- DIVIDER PEMBATAS --- */}
         <Reveal delay="delay-200">
           <div className="w-full md:w-auto flex justify-center items-center py-2 md:py-0">
              <Image 
@@ -156,10 +163,10 @@ export default function EventSection({ data }: { data: any }) {
           </div>
         </Reveal>
 
-        {/* KARTU 2: RESEPSI */}
+        {/* KARTU 2: RESEPSI (Ditambahkan data.waktuSelesaiResepsi) */}
         <div className="flex-1 w-full max-w-md">
           <Reveal delay="delay-300">
-            <EventCard title="Resepsi" date={data.waktuResepsi} location={data.lokasiResepsi} address={data.alamatResepsi} mapsUrl={data.mapsResepsi} />
+            <EventCard title="Resepsi" date={data.waktuResepsi} endDate={data.waktuSelesaiResepsi} location={data.lokasiResepsi} address={data.alamatResepsi} mapsUrl={data.mapsResepsi} />
           </Reveal>
         </div>
 

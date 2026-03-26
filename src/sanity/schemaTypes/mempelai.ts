@@ -29,15 +29,7 @@ export default defineType({
     }),
     defineField({ name: 'fotoSampul', title: 'Foto Cover Utama', type: 'image', options: { hotspot: true } }),
 
-    defineField({ 
-      name: 'fotoSampulMobile', 
-      title: 'Foto Cover Mobile (HP/Portrait)', 
-      type: 'image', 
-      description: 'Khusus untuk tampilan HP agar foto tidak terpotong.',
-      options: { hotspot: true } 
-    }),
-
-    // --- 2. QURAN & INISIAL (BARU!) ---
+    // --- 2. QURAN & INISIAL ---
     defineField({ 
       name: 'fotoInisial', 
       title: 'Foto Section Inisial', 
@@ -57,7 +49,7 @@ export default defineType({
     defineField({ name: 'namaAyahWanita', title: 'Nama Ayah Wanita', type: 'string' }),
     defineField({ name: 'namaIbuWanita', title: 'Nama Ibu Wanita', type: 'string' }),
 
-    // --- 4. LOVE STORY (BARU!) ---
+    // --- 4. LOVE STORY ---
     defineField({
       name: 'loveStory',
       title: 'Kisah Cinta (Love Story)',
@@ -75,13 +67,25 @@ export default defineType({
       ]
     }),
 
-    // --- 5. DATA ACARA ---
-    defineField({ name: 'waktuAkad', title: 'Waktu Akad', type: 'datetime' }),
+    // --- 5. DATA ACARA (DIUPDATE) ---
+    defineField({ name: 'waktuAkad', title: 'Waktu Mulai Akad', type: 'datetime' }),
+    defineField({ 
+      name: 'waktuSelesaiAkad', 
+      title: 'Waktu Selesai Akad', 
+      type: 'datetime',
+      description: 'Boleh dikosongkan. Jika kosong, web akan otomatis menuliskan "Selesai" (Misal: 08:00 - Selesai WIB).'
+    }),
     defineField({ name: 'lokasiAkad', title: 'Lokasi Akad', type: 'string' }),
     defineField({ name: 'alamatAkad', title: 'Alamat Akad', type: 'text' }),
     defineField({ name: 'mapsAkad', title: 'Link Maps Akad', type: 'url' }),
 
-    defineField({ name: 'waktuResepsi', title: 'Waktu Resepsi', type: 'datetime' }),
+    defineField({ name: 'waktuResepsi', title: 'Waktu Mulai Resepsi', type: 'datetime' }),
+    defineField({ 
+      name: 'waktuSelesaiResepsi', 
+      title: 'Waktu Selesai Resepsi', 
+      type: 'datetime',
+      description: 'Boleh dikosongkan. Jika kosong, web akan otomatis menuliskan "Selesai".'
+    }),
     defineField({ name: 'lokasiResepsi', title: 'Lokasi Resepsi', type: 'string' }),
     defineField({ name: 'alamatResepsi', title: 'Alamat Resepsi', type: 'text' }),
     defineField({ name: 'mapsResepsi', title: 'Link Maps Resepsi', type: 'url' }),
@@ -100,7 +104,7 @@ export default defineType({
       title: 'Galeri Foto',
       type: 'array',
       options: {
-        layout: 'grid', // Membuat tampilannya rapi berbentuk grid di Sanity
+        layout: 'grid',
       },
       of: [
         {
@@ -111,7 +115,6 @@ export default defineType({
               name: 'ukuran',
               title: 'Ukuran Bingkai (Grid)',
               type: 'string',
-              description: 'Pilih ukuran foto ini saat ditampilkan di website.',
               options: {
                 list: [
                   { title: 'Standar (1 Kotak)', value: 'standar' },
@@ -120,7 +123,7 @@ export default defineType({
                 ],
                 layout: 'radio',
               },
-              initialValue: 'standar', // Default ukuran
+              initialValue: 'standar',
             }
           ]
         }
