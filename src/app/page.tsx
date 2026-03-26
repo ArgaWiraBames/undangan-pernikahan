@@ -78,7 +78,7 @@ export default async function Home() {
 
       {/* --- 5. INITIALS PHOTO SECTION --- */}
       <Reveal>
-        <InitialsSection data={mempelai} />
+        <InitialsSection/>
       </Reveal>
 
       {/* --- 6. EVENT SECTION --- */}
