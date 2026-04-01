@@ -18,42 +18,42 @@ export default function GuestbookSection({ ucapan }: { ucapan: any[] }) {
       setStatus(result.error)
     } else {
       setStatus("Terima kasih! Doa Anda berhasil terkirim.")
-      formRef.current?.reset() // Kosongkan form setelah kirim
+      formRef.current?.reset() 
     }
     
-    // Hilangkan notifikasi setelah 3 detik
     setTimeout(() => setStatus(null), 3000)
   }
 
   return (
     <section className="relative py-24 px-6 bg-white overflow-hidden">
       
-      {/* --- OPSI 4: CSS CUSTOM SCROLLBAR --- */}
+      {/* --- CSS CUSTOM SCROLLBAR --- */}
       <style jsx>{`
         .custom-scrollbar::-webkit-scrollbar {
           width: 6px;
         }
         .custom-scrollbar::-webkit-scrollbar-track {
-          background: #f9fafb; /* gray-50 */
+          background: #f9fafb; 
           border-radius: 10px;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: #e5e7eb; /* gray-200 */
+          background: #e5e7eb; 
           border-radius: 10px;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: #d1d5db; /* gray-300 */
+          background: #d1d5db; 
         }
       `}</style>
 
-      {/* HIASAN BUNGA BAWAH KIRI (Bawaan) */}
-      <div className="absolute bottom-0 left-0 w-32 md:w-48 opacity-40 pointer-events-none z-0">
-         <Image src="/decor/bunga-pojok-kanan-bawah.png" alt="Decor" width={200} height={200} />
+      {/* --- REVISI: DEKORASI POJOK KANAN BAWAH --- */}
+      {/* Dipindah ke kanan agar tidak menabrak tombol musik, dan dibuat 'mengintip' dari sudut */}
+      <div className="absolute -bottom-12 -right-12 w-48 md:w-64 opacity-70 mix-blend-multiply pointer-events-none z-0 hover:scale-105 transition-transform duration-700">
+         <Image src="/decor/bunga-pojok-kanan-bawah.png" alt="Decor" width={300} height={300} className="object-contain" />
       </div>
 
       <div className="max-w-3xl mx-auto relative z-10">
         
-        {/* --- JUDUL & OPSI 3 (ORNAMEN BAWAH JUDUL) --- */}
+        {/* --- JUDUL & ORNAMEN BAWAH JUDUL --- */}
         <div className="text-center mb-10 animate-fade-up">
           <h2 className="font-script text-5xl md:text-6xl text-wedding-primary mb-4">Wishes & Prayers</h2>
           <div className="flex justify-center opacity-70">
@@ -61,8 +61,14 @@ export default function GuestbookSection({ ucapan }: { ucapan: any[] }) {
           </div>
         </div>
 
-        {/* --- OPSI 1: FORMULIR ALA SURAT (ENVELOPE) --- */}
-        <div className="bg-white p-2 md:p-3 rounded-2xl shadow-xl mb-16 border border-gray-100 animate-fade-up delay-100">
+        {/* --- FORMULIR ALA SURAT (ENVELOPE) --- */}
+        <div className="bg-white p-2 md:p-3 rounded-2xl shadow-xl mb-16 border border-gray-100 animate-fade-up delay-100 relative">
+          
+          {/* DEKORASI TAMBAHAN: Bunga kecil menempel di pinggir form */}
+          <div className="absolute -top-6 -left-6 w-20 md:w-28 opacity-80 pointer-events-none z-20 drop-shadow-sm">
+             <Image src="/decor/bunga-pojok-kiri-atas.png" alt="Decor Form" width={150} height={150} className="object-contain" />
+          </div>
+
           <div className="border-2 border-dashed border-wedding-secondary/40 rounded-xl p-6 md:p-8 bg-[#faeee0]/20">
             <form 
               ref={formRef}
@@ -94,7 +100,7 @@ export default function GuestbookSection({ ucapan }: { ucapan: any[] }) {
               <button 
                 type="submit" 
                 disabled={isSubmitting}
-                className="mt-4 bg-wedding-primary text-white py-3 px-10 rounded-full font-bold uppercase tracking-widest hover:bg-wedding-secondary hover:scale-105 disabled:opacity-50 disabled:hover:scale-100 transition-all shadow-md self-center"
+                className="mt-4 bg-wedding-primary text-white py-3 px-10 rounded-full font-bold uppercase tracking-widest hover:bg-wedding-secondary hover:scale-105 disabled:opacity-50 disabled:hover:scale-100 transition-all shadow-md self-center relative z-10"
               >
                 {isSubmitting ? "Mengirim..." : "Kirim Ucapan"}
               </button>
@@ -111,7 +117,7 @@ export default function GuestbookSection({ ucapan }: { ucapan: any[] }) {
         {/* --- KOTAK DAFTAR UCAPAN --- */}
         <div className="relative bg-gray-50/50 p-6 md:p-8 rounded-3xl border border-gray-100 shadow-inner animate-fade-up delay-200 overflow-hidden">
           
-          {/* --- OPSI 5: WATERMARK TRANSPARAN DI BELAKANG --- */}
+          {/* --- WATERMARK TRANSPARAN DI BELAKANG --- */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-[0.03] pointer-events-none z-0 w-[300px] md:w-[400px]">
             <Image src="/decor/bunga-pojok-kiri-atas.png" alt="Watermark" width={400} height={400} className="object-contain" />
           </div>
@@ -122,10 +128,8 @@ export default function GuestbookSection({ ucapan }: { ucapan: any[] }) {
             )}
 
             {ucapan.map((item, i) => (
-              // --- OPSI 2: KARTU KUTIPAN (QUOTE CARDS) ---
               <div key={i} className="relative bg-white p-5 md:p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow group">
                 
-                {/* Ikon Tanda Kutip Background */}
                 <div className="absolute top-2 right-6 opacity-5 text-wedding-primary font-serif text-7xl pointer-events-none group-hover:scale-110 transition-transform duration-500">
                   "
                 </div>
