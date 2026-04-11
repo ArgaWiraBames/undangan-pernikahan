@@ -1,40 +1,23 @@
 'use server'
+import { client } from "@/sanity/client"
+import { revalidatePath } from "next/cache" // <-- IMPORT BARU INI
 
-import { createClient } from "next-sanity"
-import { revalidatePath } from "next/cache"
-
-// Client khusus yang punya izin MENULIS (pakai Token)
-const writeClient = createClient({
-  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
-  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET,
-  token: process.env.SANITY_API_TOKEN, // <--- Ini kuncinya!
-  apiVersion: "2024-01-01",
-  useCdn: false,
-})
-
-export async function kirimUcapan(formData: FormData) {
-  const nama = formData.get('nama')?.toString()
-  const pesan = formData.get('pesan')?.toString()
-
-  if (!nama || !pesan) {
-    return { error: "Nama dan pesan wajib diisi ya!" }
-  }
-
+export async function kirimUcapan(nama: string, pesan: string, konfirmasi: string) {
   try {
-    // Simpan ke Sanity
-    await writeClient.create({
+    await client.create({
       _type: 'ucapan',
-      nama: nama,
-      pesan: pesan,
-      waktu: new Date().toISOString()
+      nama,
+      pesan,
+      konfirmasi,
+      waktu: new Date().toISOString(),
     })
-
-    // Refresh halaman agar pesan baru langsung muncul
-    revalidatePath('/')
+    
+    // <-- PERINTAH BARU INI: Memaksa Next.js menyegarkan data di halaman utama
+    revalidatePath('/') 
     
     return { success: true }
   } catch (error) {
     console.error("Gagal kirim ucapan:", error)
-    return { error: "Maaf, gagal mengirim ucapan. Coba lagi ya." }
+    return { error: "Gagal mengirim pesan." }
   }
 }
